@@ -1,0 +1,9 @@
+# Ignorar diretórios de build
+build/
+dist/
+Lib/
+Scripts/
+
+# Ignorar arquivos específicos
+CACHEDIR.TAG
+pyvenv.cfg
