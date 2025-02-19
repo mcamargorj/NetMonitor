@@ -7,7 +7,6 @@ import select
 from rich.console import Console
 from rich.table import Table
 from rich import box
-import pyfiglet
 from colorama import init, Fore, Style
 from rich.progress import Progress, SpinnerColumn, TextColumn
 
@@ -145,10 +144,15 @@ def mensagem_inicial():
     time.sleep(2)
     efeito("Análise concluída...", Fore.RED)
     time.sleep(2)
-
+ascii_art= """
+ _   _      _   __  __             _ _             
+| \\ | | ___| |_|  \\/  | ___  _ __ (_) |_ ___  _ __ 
+|  \\| |/ _ \\ __| |\\/| |/ _ \\| '_ \\| | __/ _ \\| '__|
+| |\\  |  __/ |_| |  | | (_) | | | | | || (_) | |   
+|_| \\_|\\___|\\__|_|  |_|\\___/|_| |_|_|\\__\\___/|_|   
+"""
 if __name__ == "__main__":
 
-    ascii_art = pyfiglet.figlet_format("NetMonitor")
     console.print(f"[bold green]{ascii_art}[/bold green]")
     opcao_established = input("Deseja listar apenas conexões ESTABLISHED? (s/n): ").strip().lower() == "s"
     

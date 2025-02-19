@@ -7,7 +7,6 @@ from rich.console import Console
 from rich.table import Table
 from rich import box
 from colorama import init, Fore, Style
-import pyfiglet
 from rich.progress import Progress, SpinnerColumn, TextColumn
 
 # Developed By MSCHelp 
@@ -145,9 +144,17 @@ def rodape():
     texto_centralizado = texto_rodape.center(largura_tela)
     console.print(f"\n\n[bold green]{texto_centralizado}[/bold green]")
 
+
+ascii_art= """
+ _   _      _   __  __             _ _             
+| \\ | | ___| |_|  \\/  | ___  _ __ (_) |_ ___  _ __ 
+|  \\| |/ _ \\ __| |\\/| |/ _ \\| '_ \\| | __/ _ \\| '__|
+| |\\  |  __/ |_| |  | | (_) | | | | | || (_) | |   
+|_| \\_|\\___|\\__|_|  |_|\\___/|_| |_|_|\\__\\___/|_|   
+"""
+
 if __name__ == "__main__":
     
-    ascii_art = pyfiglet.figlet_format("NetMonitor")
     console.print(f"[bold green]{ascii_art}[/bold green]")
     
     opcao_established = input("Deseja listar apenas conexões ESTABLISHED? (s/n): ").strip().lower() == "s"
