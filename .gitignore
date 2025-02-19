@@ -7,3 +7,4 @@ Scripts/
 # Ignorar arquivos específicos
 CACHEDIR.TAG
 pyvenv.cfg
+appcli.spec
