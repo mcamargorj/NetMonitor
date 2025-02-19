@@ -25,20 +25,11 @@ def efeito(texto, cor=Fore.WHITE, delay=0.02):
     
     print()
 
-def obter_tipo_protocolo(protocolo):
-    if protocolo == socket.SOCK_STREAM:
-        return "TCP"
-    elif protocolo == socket.SOCK_DGRAM:
-        return "UDP"
-    else:
-        return f"Desconhecido ({protocolo})"
-
 def obter_conexoes(porta_local_filtro=None, porta_remota_filtro=None, apenas_established=False, progress=None, task=None):
     conexoes = []
 
     try:
         todas_conexoes = psutil.net_connections(kind='inet')
-        #total_conexoes = len(todas_conexoes)
 
         for i, conn in enumerate(todas_conexoes):
             protocolo = conn.type
@@ -110,12 +101,22 @@ def mostrar_conexoes(porta_local_filtro=None, porta_remota_filtro=None, apenas_e
     console.print(table)
     rodape()
 
+# def obter_processo(pid):
+#     try:
+#         processo = psutil.Process(int(pid))
+#         return processo.name()
+#     except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+#         return "Desconhecido"
 def obter_processo(pid):
     try:
-        processo = psutil.Process(int(pid))
+        if os.name == "nt":  
+            processo = psutil.Process(int(pid))
+        else: 
+            processo = psutil.Process(pid)
         return processo.name()
     except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
         return "Desconhecido"
+
 
 def resolver_hostname(ip):
     try:
@@ -123,13 +124,31 @@ def resolver_hostname(ip):
     except socket.herror:
         return "Não Resolvido"
 
+def obter_tipo_protocolo(protocolo):
+    if protocolo == socket.SOCK_STREAM:
+        return "TCP"
+    elif protocolo == socket.SOCK_DGRAM:
+        return "UDP"
+    else:
+        return f"Desconhecido ({protocolo})"
+
+# def encerrar_processo(pid):
+#     try:
+#         os.system(f"taskkill /PID {pid} /F")
+#         console.print(f"[bold green]Processo {pid} encerrado com sucesso.[/bold green]")
+#     except Exception as e:
+#         console.print(f"[bold red]Erro ao encerrar processo {pid}: {e}[/bold red]")
+
 def encerrar_processo(pid):
     try:
-        os.system(f"taskkill /PID {pid} /F")
+        if os.name == "nt":  # Windows
+            os.system(f"taskkill /PID {pid} /F")
+        else:  # Linux e outros sistemas
+            os.system(f"kill -9 {pid}")
         console.print(f"[bold green]Processo {pid} encerrado com sucesso.[/bold green]")
     except Exception as e:
         console.print(f"[bold red]Erro ao encerrar processo {pid}: {e}[/bold red]")
-
+        
 def mensagem_inicial():
     efeito("Iniciando varredura de rede...", Fore.GREEN)
     time.sleep(1)
@@ -179,7 +198,7 @@ if __name__ == "__main__":
 
         if pid_input.isdigit():
             encerrar_processo(pid_input)
-            time.sleep(2)  # Pequeno delay para exibir a mensagem antes de pedir outro PID
+            time.sleep(2)  
 
         if not pid_input or time.time() - ultima_atualizacao >= 60:
             mostrar_conexoes(porta_local, porta_remota, opcao_established)
