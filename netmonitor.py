@@ -9,6 +9,8 @@ from rich import box
 from colorama import init, Fore, Style
 from rich.progress import Progress, SpinnerColumn, TextColumn
 
+# Developed By MSCHelp 
+
 init(autoreset=True)
 
 console = Console()
@@ -49,8 +51,8 @@ def obter_conexoes(porta_local_filtro=None, porta_remota_filtro=None, apenas_est
             conexoes.append((protocolo, ip_local, porta_local, ip_remoto, porta_remota, estado, pid))
             
             if progress and task:
-                progress.update(task, advance=1)  
-
+                progress.update(task, advance=1)
+                
     except Exception as e:
         print(f"Erro ao obter conexões: {e}")
 
@@ -62,13 +64,12 @@ def mostrar_conexoes(porta_local_filtro=None, porta_remota_filtro=None, apenas_e
     with Progress(
         SpinnerColumn(),
         TextColumn("[progress.description]{task.description}"),
-        transient=False,  
+        transient=True,
     ) as progress:
         
         todas_conexoes = psutil.net_connections(kind='inet')
         total_conexoes = len(todas_conexoes)
-
-        task = progress.add_task("[cyan]Carregando conexões...", total=total_conexoes) 
+        task = progress.add_task("[cyan]Carregando conexões...", total=total_conexoes)
         
         conexoes = obter_conexoes(porta_local_filtro, porta_remota_filtro, apenas_established, progress, task)
 
@@ -76,26 +77,36 @@ def mostrar_conexoes(porta_local_filtro=None, porta_remota_filtro=None, apenas_e
         console.print("[bold yellow]Nenhuma conexão encontrada.[/bold yellow]")
         return
     
-    table = Table(title="[bold green]Conexões de Rede[/bold green]", box=box.ROUNDED)
-    table.add_column("PID", justify="right", style="cyan")
-    table.add_column("Processo", justify="left", style="magenta")
-    table.add_column("IP Local", justify="left", style="green")
-    table.add_column("Porta Local", justify="right", style="yellow")
-    table.add_column("IP Remoto", justify="left", style="red")
-    table.add_column("Porta Remota", justify="right", style="blue")
-    table.add_column("Hostname", justify="left", style="cyan")
-    table.add_column("Estado", justify="left", style="magenta")
-    table.add_column("Protocolo", justify="left", style="green")
-    
-    for protocolo, ip_local, porta_local, ip_remoto, porta_remota, estado, pid in conexoes:
-        nome_processo = obter_processo(pid)
-        hostname = resolver_hostname(ip_remoto) if ip_remoto != "0.0.0.0" else "N/A"
-        porta_local_str = str(porta_local) if porta_local is not None else "N/A"
-        porta_remota_str = str(porta_remota) if porta_remota is not None else "N/A"
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        transient=True,
+    ) as progress:
+        task = progress.add_task("[cyan]Carregando conexões...", total=len(conexoes))
+        
+        table = Table(title="[bold green]Conexões de Rede[/bold green]", box=box.ROUNDED)
+        table.add_column("PID", justify="right", style="cyan")
+        table.add_column("Processo", justify="left", style="magenta")
+        table.add_column("IP Local", justify="left", style="green")
+        table.add_column("Porta Local", justify="right", style="yellow")
+        table.add_column("IP Remoto", justify="left", style="red")
+        table.add_column("Porta Remota", justify="right", style="blue")
+        table.add_column("Hostname", justify="left", style="cyan")
+        table.add_column("Estado", justify="left", style="magenta")
+        table.add_column("Protocolo", justify="left", style="green")
+        
+        for protocolo, ip_local, porta_local, ip_remoto, porta_remota, estado, pid in conexoes:
+            nome_processo = obter_processo(pid)
+            hostname = resolver_hostname(ip_remoto) if ip_remoto != "0.0.0.0" else "N/A"
+            porta_local_str = str(porta_local) if porta_local is not None else "N/A"
+            porta_remota_str = str(porta_remota) if porta_remota is not None else "N/A"
 
-        table.add_row(
-            str(pid), nome_processo, ip_local, porta_local_str, ip_remoto, porta_remota_str, hostname, estado, obter_tipo_protocolo(protocolo)
-        )
+            table.add_row(
+                str(pid), nome_processo, ip_local, porta_local_str, ip_remoto, porta_remota_str, hostname, estado, obter_tipo_protocolo(protocolo)
+            )
+            
+            progress.update(task, advance=1)
+    
     console.print(table)
     rodape()
 
@@ -125,14 +136,14 @@ def obter_tipo_protocolo(protocolo):
 
 def encerrar_processo(pid):
     try:
-        if os.name == "nt":  
+        if os.name == "nt": 
             os.system(f"taskkill /PID {pid} /F")
         else:  
             os.system(f"kill -9 {pid}")
         console.print(f"[bold green]Processo {pid} encerrado com sucesso.[/bold green]")
     except Exception as e:
         console.print(f"[bold red]Erro ao encerrar processo {pid}: {e}[/bold red]")
-        
+
 def mensagem_inicial():
     efeito("Iniciando varredura de rede...", Fore.GREEN)
     time.sleep(1)
@@ -141,7 +152,6 @@ def mensagem_inicial():
     efeito("Análise concluída...", Fore.RED)
     time.sleep(2)
 
-# Developed By MSCHelp 
 def rodape():
     largura_tela = os.get_terminal_size().columns
     texto_rodape = "Developed By @MSCHelp"
