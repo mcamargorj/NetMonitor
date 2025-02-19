@@ -17,4 +17,4 @@ Clone o repositório e instale as dependências:
 git clone https://github.com/mcamargorj/NetMonitor.git
 cd NetMonitor
 
-![PrintNetMonitor01](imagens/PrintNetMonitor01.jpeg)
+![PrintNetMonitor01](imagens/PrintNetMonitor01.jpg)
