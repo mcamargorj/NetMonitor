@@ -9,8 +9,6 @@ from rich import box
 from colorama import init, Fore, Style
 from rich.progress import Progress, SpinnerColumn, TextColumn
 
-# Developed By MSCHelp 
-
 init(autoreset=True)
 
 console = Console()
@@ -101,12 +99,6 @@ def mostrar_conexoes(porta_local_filtro=None, porta_remota_filtro=None, apenas_e
     console.print(table)
     rodape()
 
-# def obter_processo(pid):
-#     try:
-#         processo = psutil.Process(int(pid))
-#         return processo.name()
-#     except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
-#         return "Desconhecido"
 def obter_processo(pid):
     try:
         if os.name == "nt":  
@@ -116,7 +108,6 @@ def obter_processo(pid):
         return processo.name()
     except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
         return "Desconhecido"
-
 
 def resolver_hostname(ip):
     try:
@@ -132,18 +123,11 @@ def obter_tipo_protocolo(protocolo):
     else:
         return f"Desconhecido ({protocolo})"
 
-# def encerrar_processo(pid):
-#     try:
-#         os.system(f"taskkill /PID {pid} /F")
-#         console.print(f"[bold green]Processo {pid} encerrado com sucesso.[/bold green]")
-#     except Exception as e:
-#         console.print(f"[bold red]Erro ao encerrar processo {pid}: {e}[/bold red]")
-
 def encerrar_processo(pid):
     try:
-        if os.name == "nt":  # Windows
+        if os.name == "nt":  
             os.system(f"taskkill /PID {pid} /F")
-        else:  # Linux e outros sistemas
+        else:  
             os.system(f"kill -9 {pid}")
         console.print(f"[bold green]Processo {pid} encerrado com sucesso.[/bold green]")
     except Exception as e:
@@ -157,6 +141,7 @@ def mensagem_inicial():
     efeito("Análise concluída...", Fore.RED)
     time.sleep(2)
 
+# Developed By MSCHelp 
 def rodape():
     largura_tela = os.get_terminal_size().columns
     texto_rodape = "Developed By @MSCHelp"
