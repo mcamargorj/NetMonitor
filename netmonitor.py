@@ -170,21 +170,17 @@ if __name__ == "__main__":
     mostrar_conexoes(porta_local, porta_remota, opcao_established)
 
     while True:
-        
         console.print("\n[bold]Digite o PID do processo que deseja encerrar (ou pressione Enter para atualizar, ou 'q' para sair):[/bold]", end=" ")
         pid_input = input().strip()
 
-        if pid_input:
-            if pid_input == 'q':
-                console.print("[bold yellow]Saindo do programa...[/bold yellow]")
-                break
-            elif pid_input.isdigit():
-                encerrar_processo(pid_input)
-         
-        else:            
-            mostrar_conexoes(porta_local, porta_remota, opcao_established)
-            ultima_atualizacao = time.time()
-        
-        if time.time() - ultima_atualizacao >= 60:
+        if pid_input == 'q':
+            console.print("[bold yellow]Saindo do programa...[/bold yellow]")
+            break
+
+        if pid_input.isdigit():
+            encerrar_processo(pid_input)
+            time.sleep(2)  # Pequeno delay para exibir a mensagem antes de pedir outro PID
+
+        if not pid_input or time.time() - ultima_atualizacao >= 60:
             mostrar_conexoes(porta_local, porta_remota, opcao_established)
             ultima_atualizacao = time.time()

@@ -5,12 +5,8 @@ a = Analysis(
     ['netmonitor.py'],
     pathex=[],
     binaries=[],
-   
-    datas=[
-    ('net.png', '.'),
-    ('C:/monitor_rede/Lib/site-packages/pyfiglet/fonts', 'pyfiglet/fonts')
-    ],
-    hiddenimports=['os', 'socket', 'time', 'sys', 'rich', 'colorama', 'pyfiglet', 'pyfiglet.fonts', 'psutil'],
+    datas=[('net.png', '.')],
+    hiddenimports=['os', 'socket', 'time', 'sys', 'rich', 'colorama', 'psutil'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
