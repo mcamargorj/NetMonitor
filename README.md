@@ -1,5 +1,5 @@
 # NetMonitor
-
+<img src="imagens/Print_NetMonitor01.jpeg" alt="Monitor de Rede" width="250">
 **NetMonitor** é uma ferramenta para monitoramento de conexões de rede TCP e UDP em tempo real. Este projeto foi desenvolvido para fornecer uma visualização clara e precisa das conexões de rede ativas, permitindo que você monitore o tráfego e o estado das portas de rede de forma simples e eficiente.
 
 ## Funcionalidades
@@ -16,4 +16,4 @@ Clone o repositório e instale as dependências:
 ```bash
 git clone https://github.com/mcamargorj/NetMonitor.git
 cd NetMonitor
-<img src="imagens/Print_NetMonitor01.jpeg" alt="Monitor de Rede" width="250">
+
