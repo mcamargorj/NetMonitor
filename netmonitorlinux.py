@@ -1,13 +1,14 @@
 import os
-import psutil
 import socket
+import psutil
 import time
 import sys
+import select
 from rich.console import Console
 from rich.table import Table
 from rich import box
-from colorama import init, Fore, Style
 import pyfiglet
+from colorama import init, Fore, Style
 from rich.progress import Progress, SpinnerColumn, TextColumn
 
 # Developed By MSCHelp 
@@ -20,26 +21,17 @@ def efeito(texto, cor=Fore.WHITE, delay=0.02):
     sys.stdout.write("\033[2J\033[H")  
     
     for char in texto:
-        sys.stdout.write(cor + char + Style.RESET_ALL) 
+        sys.stdout.write(cor + char + Style.RESET_ALL)  
         sys.stdout.flush()
         time.sleep(delay)
     
-    print()
-
-def obter_tipo_protocolo(protocolo):
-    if protocolo == socket.SOCK_STREAM:
-        return "TCP"
-    elif protocolo == socket.SOCK_DGRAM:
-        return "UDP"
-    else:
-        return f"Desconhecido ({protocolo})"
+    print()  
 
 def obter_conexoes(porta_local_filtro=None, porta_remota_filtro=None, apenas_established=False, progress=None, task=None):
     conexoes = []
 
     try:
         todas_conexoes = psutil.net_connections(kind='inet')
-        #total_conexoes = len(todas_conexoes)
 
         for i, conn in enumerate(todas_conexoes):
             protocolo = conn.type
@@ -69,7 +61,7 @@ def obter_conexoes(porta_local_filtro=None, porta_remota_filtro=None, apenas_est
     return conexoes
 
 def mostrar_conexoes(porta_local_filtro=None, porta_remota_filtro=None, apenas_established=False):
-    os.system('cls' if os.name == 'nt' else 'clear')
+    os.system('clear')
     
     with Progress(
         SpinnerColumn(),
@@ -111,9 +103,15 @@ def mostrar_conexoes(porta_local_filtro=None, porta_remota_filtro=None, apenas_e
     console.print(table)
     rodape()
 
+def rodape():
+    largura_tela = os.get_terminal_size().columns
+    texto_rodape = "Developed By @MSCHelp"
+    texto_centralizado = texto_rodape.center(largura_tela)
+    console.print(f"\n\n[bold green]{texto_centralizado}[/bold green]")
+
 def obter_processo(pid):
     try:
-        processo = psutil.Process(int(pid))
+        processo = psutil.Process(pid)
         return processo.name()
     except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
         return "Desconhecido"
@@ -124,12 +122,21 @@ def resolver_hostname(ip):
     except socket.herror:
         return "Não Resolvido"
 
+def obter_tipo_protocolo(protocolo):
+    if protocolo == socket.SOCK_STREAM:
+        return "TCP"
+    elif protocolo == socket.SOCK_DGRAM:
+        return "UDP"
+    else:
+        return f"Desconhecido ({protocolo})"
+
 def encerrar_processo(pid):
     try:
-        os.system(f"taskkill /PID {pid} /F")
+        os.system(f"kill -9 {pid}")
         console.print(f"[bold green]Processo {pid} encerrado com sucesso.[/bold green]")
     except Exception as e:
         console.print(f"[bold red]Erro ao encerrar processo {pid}: {e}[/bold red]")
+
 
 def mensagem_inicial():
     efeito("Iniciando varredura de rede...", Fore.GREEN)
@@ -139,45 +146,34 @@ def mensagem_inicial():
     efeito("Análise concluída...", Fore.RED)
     time.sleep(2)
 
-def rodape():
-    largura_tela = os.get_terminal_size().columns
-    texto_rodape = "Developed By @MSCHelp"
-    texto_centralizado = texto_rodape.center(largura_tela)
-    console.print(f"\n\n[bold green]{texto_centralizado}[/bold green]")
-
 if __name__ == "__main__":
-    
+
     ascii_art = pyfiglet.figlet_format("NetMonitor")
     console.print(f"[bold green]{ascii_art}[/bold green]")
-    
     opcao_established = input("Deseja listar apenas conexões ESTABLISHED? (s/n): ").strip().lower() == "s"
-
+    
     porta_local = input("Filtrar por porta local (ou pressione Enter para todas): ").strip()
-    porta_local = int(porta_local) if porta_local.isdigit() else None
+    porta_local = porta_local if porta_local.isdigit() else None
 
     porta_remota = input("Filtrar por porta remota (ou pressione Enter para todas): ").strip()
-    porta_remota = int(porta_remota) if porta_remota.isdigit() else None
-    
-    mensagem_inicial()   
+    porta_remota = porta_remota if porta_remota.isdigit() else None
+    mensagem_inicial()
     ultima_atualizacao = time.time()
     mostrar_conexoes(porta_local, porta_remota, opcao_established)
 
+    console.print("\n[bold]Digite o PID do processo que deseja encerrar (ou pressione Enter para atualizar, ou 'q' para sair):[/bold] ", end="", style="bold")
     while True:
-        
-        console.print("\n[bold]Digite o PID do processo que deseja encerrar (ou pressione Enter para atualizar, ou 'q' para sair):[/bold]", end=" ")
-        pid_input = input().strip()
-
-        if pid_input:
-            if pid_input == 'q':
-                console.print("[bold yellow]Saindo do programa...[/bold yellow]")
-                break
-            elif pid_input.isdigit():
-                encerrar_processo(pid_input)
-         
-        else:            
-            mostrar_conexoes(porta_local, porta_remota, opcao_established)
-            ultima_atualizacao = time.time()
-        
         if time.time() - ultima_atualizacao >= 60:
             mostrar_conexoes(porta_local, porta_remota, opcao_established)
             ultima_atualizacao = time.time()
+            console.print("\n[bold]Digite o PID do processo que deseja encerrar (ou pressione Enter para atualizar, ou 'q' para sair):[/bold] ", end="", style="bold")
+
+        rlist, _, _ = select.select([sys.stdin], [], [], 0.1)
+        if rlist:
+            pid = sys.stdin.readline().strip()
+            if pid == 'q':
+                console.print("[bold yellow]Saindo do programa...[/bold yellow]")
+                break
+            elif pid.isdigit():
+                encerrar_processo(pid)
+                console.print("\n[bold]Digite o PID do processo que deseja encerrar (ou pressione Enter para atualizar, ou 'q' para sair):[/bold] ", end="", style="bold")

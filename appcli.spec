@@ -9,7 +9,7 @@ a = Analysis(
     datas=[
     ('net.png', '.'),
     ('C:/monitor_rede/Lib/site-packages/pyfiglet/fonts', 'pyfiglet/fonts')
-],
+    ],
     hiddenimports=['os', 'socket', 'time', 'sys', 'rich', 'colorama', 'pyfiglet', 'pyfiglet.fonts', 'psutil'],
     hookspath=[],
     hooksconfig={},
