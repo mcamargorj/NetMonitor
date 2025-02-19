@@ -16,5 +16,4 @@ Clone o repositório e instale as dependências:
 ```bash
 git clone https://github.com/mcamargorj/NetMonitor.git
 cd NetMonitor
-
-![Print_NetMonitor01](imagens/Print_NetMonitor01.jpeg)
+<img src="imagens/Print_NetMonitor01.jpeg" alt="Monitor de Rede" width="250">
