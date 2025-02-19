@@ -29,8 +29,12 @@ cd NetMonitor
 python -m venv venv
 venv\Scripts\activate
 
+# Criar e ativar o ambiente virtual (Linux)
+python -m venv venv
+source venv/bin/activate
+
 # Instalar as dependências
 pip install -r requirements.txt
 
 # Executar o NetMonitor
-python NetMonitor.py
+python netmonitor.py
