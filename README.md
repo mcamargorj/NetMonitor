@@ -15,7 +15,8 @@ O **NetMonitor** é uma ferramenta prática e eficiente para monitoramento de co
 ✅ **Relatórios em Tempo Real** – Atualização dinâmica das conexões.  
 
 ---  
-![NetMonitor](images/NetMonitor.png)
+![NetMonitor](imagens/NetMonitor.png)
+
 
 ## 🛠 Instalação  
 
